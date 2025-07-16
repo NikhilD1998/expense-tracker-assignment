@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/helpers/device_dimensions.dart';
 import 'dart:async';
 
 import 'package:frontend/screens/dashboard_screen.dart';
@@ -23,6 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    DeviceDimensions.init(context);
     return const Scaffold(
       body: Center(
         child: Text(
