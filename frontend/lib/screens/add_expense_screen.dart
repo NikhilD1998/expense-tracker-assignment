@@ -53,6 +53,8 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
           date: selectedDate!.toIso8601String(),
           category: selectedCategory,
         );
+    ref.invalidate(expenseProvider);
+    Navigator.of(context).pop();
 
     final state = ref.read(expenseProvider);
     if (state.success) {

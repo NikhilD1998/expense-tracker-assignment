@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:csv/csv.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/helpers/constants.dart';
@@ -95,7 +94,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     List<Map<String, dynamic>> expenses,
     BuildContext context,
   ) async {
-    // Prepare CSV data
     List<List<dynamic>> rows = [
       ['Name', 'Amount', 'Date', 'Category'],
       ...expenses.map(
@@ -110,7 +108,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
 
     String csvData = const ListToCsvConverter().convert(rows);
 
-    // Get Downloads directory (Android only)
     Directory? downloadsDir;
     if (Platform.isAndroid) {
       final directory = Directory('/storage/emulated/0/Download');
