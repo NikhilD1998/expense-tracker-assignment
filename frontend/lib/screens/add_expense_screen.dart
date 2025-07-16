@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/helpers/device_dimensions.dart';
 import 'package:frontend/widgets/custom_primary_button.dart';
 import 'package:frontend/widgets/custom_text_field.dart';
+import 'package:frontend/providers/expense_provider.dart';
 
-class AddExpenseScreen extends StatefulWidget {
+class AddExpenseScreen extends ConsumerStatefulWidget {
   const AddExpenseScreen({super.key});
 
   @override
-  State<AddExpenseScreen> createState() => _AddExpenseScreenState();
+  ConsumerState<AddExpenseScreen> createState() => _AddExpenseScreenState();
 }
 
-class _AddExpenseScreenState extends State<AddExpenseScreen> {
+class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
   DateTime? selectedDate;
@@ -32,9 +34,43 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     }
   }
 
+  void _addExpense() async {
+    if (nameController.text.trim().isEmpty ||
+        amountController.text.trim().isEmpty ||
+        selectedDate == null ||
+        selectedCategory.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please fill all fields')));
+      return;
+    }
+
+    await ref
+        .read(expenseProvider.notifier)
+        .addExpense(
+          name: nameController.text.trim(),
+          amount: double.tryParse(amountController.text.trim()) ?? 0,
+          date: selectedDate!.toIso8601String(),
+          category: selectedCategory,
+        );
+
+    final state = ref.read(expenseProvider);
+    if (state.success) {
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    } else if (state.error != null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(state.error!)));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     DeviceDimensions.init(context);
+    final expenseState = ref.watch(expenseProvider);
+
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
@@ -112,7 +148,10 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               SizedBox(
                 width: DeviceDimensions.width * 0.9,
                 height: 48,
-                child: CustomPrimaryButton(onPressed: () {}, label: 'Add'),
+                child: CustomPrimaryButton(
+                  onPressed: _addExpense,
+                  label: expenseState.isLoading ? 'Adding...' : 'Add',
+                ),
               ),
             ],
           ),
