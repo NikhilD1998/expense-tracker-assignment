@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/helpers/constants.dart';
 import 'package:frontend/screens/splash_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,8 +15,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Expense Tracker',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: primaryColor,
+          primary: primaryColor,
+        ),
+        textTheme: GoogleFonts.interTextTheme(),
       ),
+      debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
     );
   }
