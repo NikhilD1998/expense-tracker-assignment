@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/helpers/device_dimensions.dart';
+import 'package:frontend/helpers/transition_animation.dart';
 import 'dart:async';
 
 import 'package:frontend/screens/login_screen.dart';
@@ -16,9 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-      );
+      navigateWithFade(context, LoginScreen());
     });
   }
 
