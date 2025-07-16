@@ -7,6 +7,7 @@ import 'package:frontend/screens/add_expense_screen.dart';
 import 'package:frontend/providers/expense_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -35,7 +36,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     List<Map<String, dynamic>> expenses,
     String mode,
   ) {
-    Map<int, double> grouped = {}; // hour (0-23) -> total amount
+    Map<int, double> grouped = {};
 
     if (mode == "day") {
       final now = DateTime.now();
@@ -81,7 +82,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
         if (amt > max) max = amt;
       }
     }
-    return max > 0 ? max * 1.2 : 100; // 20% headroom or default 100
+    return max > 0 ? max * 1.2 : 100;
   }
 
   @override
@@ -113,7 +114,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    // Day Chart
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: BarChart(
@@ -219,7 +219,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                               ),
                             ),
                             confirmDismiss: (direction) async {
-                              // Optionally show a confirmation dialog
                               return await showDialog(
                                 context: context,
                                 builder: (ctx) => AlertDialog(
@@ -243,11 +242,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                               );
                             },
                             onDismissed: (direction) async {
-                              // Call your delete API here
                               await ref
                                   .read(expenseProvider.notifier)
                                   .deleteExpense(expense['_id']);
-                              setState(() {}); // Refresh the list
+                              setState(() {});
                             },
                             child: Card(
                               color: const Color(0xFFFBFBFB),
@@ -301,19 +299,44 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
           );
         },
       ),
-      floatingActionButton: SizedBox(
-        width: DeviceDimensions.width * 0.15,
-        height: DeviceDimensions.width * 0.15,
-        child: FloatingActionButton(
-          onPressed: () async {
-            await Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const AddExpenseScreen()),
-            );
-            (context as Element).reassemble();
-          },
-          backgroundColor: const Color(0xFF29756F),
-          child: const Icon(Icons.add, size: 32, color: Colors.white),
-        ),
+      floatingActionButton: SpeedDial(
+        icon: Icons.menu,
+        activeIcon: Icons.close,
+        backgroundColor: const Color(0xFF29756F),
+        foregroundColor: Colors.white,
+        spacing: 12,
+        spaceBetweenChildren: 8,
+        children: [
+          SpeedDialChild(
+            child: const Icon(Icons.logout, color: Colors.white),
+            backgroundColor: Colors.red,
+            label: 'Logout',
+            onTap: () async {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Logout feature coming soon!')),
+              );
+            },
+          ),
+          SpeedDialChild(
+            child: const Icon(Icons.file_download, color: Colors.white),
+            backgroundColor: Colors.blue,
+            label: 'Export',
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Export feature coming soon!')),
+              );
+            },
+          ),
+          SpeedDialChild(
+            child: const Icon(Icons.add, color: Colors.white),
+            backgroundColor: Colors.green,
+            label: 'Add Expense',
+            onTap: () {
+              navigateWithFade(context, const AddExpenseScreen());
+              (context as Element).reassemble();
+            },
+          ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );

@@ -48,7 +48,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
       if (response.statusCode == 200) {
         final user = UserModel.fromJson(data['user']);
         final token = data['token'];
-        // Store token securely
         await _secureStorage.write(key: 'jwt_token', value: token);
         state = AuthState(user: user, token: token);
       } else {
@@ -69,7 +68,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 }
 
-// Riverpod provider
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>(
   (ref) => AuthNotifier(),
 );

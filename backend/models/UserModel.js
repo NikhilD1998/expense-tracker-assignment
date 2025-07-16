@@ -18,7 +18,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // Add more fields as needed (e.g., createdAt, avatar, etc.)
   },
   { timestamps: true }
 );

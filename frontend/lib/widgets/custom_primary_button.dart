@@ -20,7 +20,7 @@ class CustomPrimaryButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF29756F), // Primary color
+          backgroundColor: const Color(0xFF29756F),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
