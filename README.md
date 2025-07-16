@@ -22,6 +22,7 @@
      (update the `baseUrl` value).
 
 3. **Backend (Node.js/Express):**
+
    - Navigate to the backend directory:
      ```sh
      cd ../backend
@@ -35,4 +36,8 @@
      npx nodemon index.js
      ```
 
-Now you can run the backend server and the Flutter app
+4. **API Testing:**
+   - A Postman collection is included in the repository for easy API testing.  
+     Import it into Postman to try out all available endpoints.
+
+Now you can run the backend server and the Flutter app on your
