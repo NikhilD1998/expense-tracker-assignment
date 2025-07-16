@@ -6,10 +6,12 @@ const app = express();
 const PORT = 3000;
 
 const userRoutes = require("./routes/UserRoutes");
+const expenseRoutes = require("./routes/ExpenseRoutes");
 
 app.use(express.json());
 
 app.use("/api/users", userRoutes);
+app.use("/api/expenses", expenseRoutes);
 
 mongoose
   .connect(process.env.MONGODB_URI, {
