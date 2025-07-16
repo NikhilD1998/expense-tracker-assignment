@@ -10,7 +10,7 @@
 
 - **Backend:**  
   Implemented with **Node.js** (Express) for handling API requests and business logic.  
-  **MongoDB** is used as the database, providing a flexible and scalable NoSQL solution for storing user and expense data.
+  **MongoDB** is used as the database.
 
 - **Authentication:**  
   User authentication is implemented using **JWT (JSON Web Tokens)**.
@@ -33,7 +33,6 @@
 
 - **Export to CSV:**  
   Users can export their entire expense list to a `.csv` file, which is saved directly to the Android device's **Downloads** directory.
-  - This feature was added to empower users to back up or analyze their expenses outside the app, e.g., in Excel or Google Sheets.
 
 ## Additional Notes
 
@@ -46,9 +45,5 @@
 
 - **Platform Considerations:**
   - The export-to-CSV feature is tailored for Android, writing directly to the Downloads folder for user convenience.
-  - The app can be extended to support iOS and web with minimal changes.
 
 ---
-
-**Summary:**  
-This project combines a modern Flutter frontend with a secure Node.js/MongoDB backend, offering a responsive UI, robust authentication, and user-friendly features like swipe-to-delete and CSV export. The design choices prioritize
