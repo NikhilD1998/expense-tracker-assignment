@@ -2,10 +2,10 @@ const Expense = require("../models/ExpenseModel");
 
 const addExpense = async (req, res) => {
   try {
-    const { name, amount, date } = req.body;
+    const { name, amount, date, category } = req.body;
     const userId = req.user.userId;
 
-    if (!name || !amount || !date) {
+    if (!name || !amount || !date || !category) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -13,6 +13,7 @@ const addExpense = async (req, res) => {
       name,
       amount,
       date,
+      category,
       user: userId,
     });
 

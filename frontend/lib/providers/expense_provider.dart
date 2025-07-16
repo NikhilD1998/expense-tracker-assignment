@@ -61,6 +61,29 @@ class ExpenseNotifier extends StateNotifier<ExpenseState> {
       state = ExpenseState(isLoading: false, error: e.toString());
     }
   }
+
+  Future<List<Map<String, dynamic>>> getAllExpenses() async {
+    try {
+      final token = await _secureStorage.read(key: 'jwt_token');
+      final response = await http.get(
+        Uri.parse(ApiEndpoints.getUserExpenses),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return List<Map<String, dynamic>>.from(data['expenses']);
+      } else {
+        final data = jsonDecode(response.body);
+        throw Exception(data['message'] ?? 'Failed to fetch expenses');
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }
 
 final expenseProvider = StateNotifierProvider<ExpenseNotifier, ExpenseState>(
