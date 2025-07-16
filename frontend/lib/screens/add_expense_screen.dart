@@ -1,0 +1,123 @@
+import 'package:flutter/material.dart';
+import 'package:frontend/helpers/device_dimensions.dart';
+import 'package:frontend/widgets/custom_primary_button.dart';
+import 'package:frontend/widgets/custom_text_field.dart';
+
+class AddExpenseScreen extends StatefulWidget {
+  const AddExpenseScreen({super.key});
+
+  @override
+  State<AddExpenseScreen> createState() => _AddExpenseScreenState();
+}
+
+class _AddExpenseScreenState extends State<AddExpenseScreen> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController amountController = TextEditingController();
+  DateTime? selectedDate;
+  String selectedCategory = 'Food';
+
+  final List<String> categories = ['Food', 'Transport', 'Shopping', 'Bills'];
+
+  Future<void> _pickDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    DeviceDimensions.init(context);
+    return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(),
+        title: const Text('Add New Expense'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: DeviceDimensions.width * 0.05,
+          vertical: DeviceDimensions.height * 0.03,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                width: DeviceDimensions.width * 0.9,
+                child: CustomTextField(
+                  controller: nameController,
+                  label: 'Expense Name',
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: DeviceDimensions.width * 0.9,
+                child: CustomTextField(
+                  controller: amountController,
+                  keyboardType: TextInputType.number,
+                  label: 'Amount',
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: DeviceDimensions.width * 0.9,
+                child: InkWell(
+                  onTap: _pickDate,
+                  child: InputDecorator(
+                    decoration: const InputDecoration(
+                      labelText: 'Date',
+                      border: OutlineInputBorder(),
+                    ),
+                    child: Text(
+                      selectedDate != null
+                          ? "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}"
+                          : 'Select Date',
+                      style: TextStyle(
+                        color: selectedDate != null
+                            ? Colors.black
+                            : Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: DeviceDimensions.width * 0.9,
+                child: DropdownButtonFormField<String>(
+                  value: selectedCategory,
+                  items: categories
+                      .map(
+                        (cat) => DropdownMenuItem(value: cat, child: Text(cat)),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedCategory = value!;
+                    });
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Category',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: DeviceDimensions.width * 0.9,
+                height: 48,
+                child: CustomPrimaryButton(onPressed: () {}, label: 'Add'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
