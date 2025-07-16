@@ -1,24 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/helpers/device_dimensions.dart';
 import 'package:frontend/helpers/transition_animation.dart';
-import 'dart:async';
-
 import 'package:frontend/screens/login_screen.dart';
+import 'package:frontend/screens/dashboard_screen.dart';
+import 'package:frontend/providers/auth_provider.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      navigateWithFade(context, LoginScreen());
-    });
+    _checkAuthAndNavigate();
+  }
+
+  Future<void> _checkAuthAndNavigate() async {
+    // Wait for a short splash delay
+    await Future.delayed(const Duration(seconds: 2));
+    // Wait for autoLogin to complete
+    await ref.read(authProvider.notifier).autoLogin();
+    final authState = ref.read(authProvider);
+    if (authState.token != null) {
+      navigateWithFade(context, const DashboardScreen());
+    } else {
+      navigateWithFade(context, const LoginScreen());
+    }
   }
 
   @override

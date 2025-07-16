@@ -24,7 +24,16 @@ class AuthState {
 }
 
 class AuthNotifier extends StateNotifier<AuthState> {
-  AuthNotifier() : super(AuthState());
+  AuthNotifier() : super(AuthState()) {
+    autoLogin();
+  }
+
+  Future<void> autoLogin() async {
+    final token = await _secureStorage.read(key: 'jwt_token');
+    if (token != null) {
+      state = AuthState(token: token);
+    }
+  }
 
   Future<void> login(String email, String password) async {
     try {
