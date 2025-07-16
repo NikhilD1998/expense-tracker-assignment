@@ -15,7 +15,7 @@ class DashboardScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: ref.read(expenseProvider.notifier).getAllExpenses(),
+        future: ref.watch(expenseProvider.notifier).getAllExpenses(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -70,6 +70,7 @@ class DashboardScreen extends ConsumerWidget {
         child: FloatingActionButton(
           onPressed: () {
             navigateWithFade(context, const AddExpenseScreen());
+            (context as Element).reassemble();
           },
           backgroundColor: const Color(0xFF29756F),
           child: const Icon(Icons.add, size: 32, color: Colors.white),
