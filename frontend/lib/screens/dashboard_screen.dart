@@ -22,7 +22,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 1, vsync: this);
   }
 
   @override
@@ -105,14 +105,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
               SizedBox(height: DeviceDimensions.height * 0.04),
               TabBar(
                 controller: _tabController,
-                labelColor: primaryColor,
-                unselectedLabelColor: Colors.grey,
-                indicatorColor: primaryColor,
-                tabs: const [
-                  Tab(text: "Day"),
-                  Tab(text: "Week"),
-                  Tab(text: "Month"),
-                ],
+                tabs: const [Tab(text: "Day")],
               ),
               SizedBox(
                 height: DeviceDimensions.height * 0.4,
@@ -193,8 +186,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                         ),
                       ),
                     ),
-                    Center(child: Text("Week Chart (implement logic)")),
-                    Center(child: Text("Month Chart (implement logic)")),
                   ],
                 ),
               ),
