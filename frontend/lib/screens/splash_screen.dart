@@ -21,9 +21,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _checkAuthAndNavigate() async {
-    // Wait for a short splash delay
     await Future.delayed(const Duration(seconds: 2));
-    // Wait for autoLogin to complete
     await ref.read(authProvider.notifier).autoLogin();
     final authState = ref.read(authProvider);
     if (authState.token != null) {
