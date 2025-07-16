@@ -62,7 +62,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     return await _secureStorage.read(key: 'jwt_token');
   }
 
-  void logout() async {
+  Future logout() async {
     await _secureStorage.delete(key: 'jwt_token');
     state = AuthState();
   }

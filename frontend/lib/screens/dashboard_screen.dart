@@ -5,9 +5,11 @@ import 'package:frontend/helpers/device_dimensions.dart';
 import 'package:frontend/helpers/transition_animation.dart';
 import 'package:frontend/screens/add_expense_screen.dart';
 import 'package:frontend/providers/expense_provider.dart';
+import 'package:frontend/screens/login_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:frontend/providers/auth_provider.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -312,9 +314,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
             backgroundColor: Colors.red,
             label: 'Logout',
             onTap: () async {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Logout feature coming soon!')),
-              );
+              await ref.read(authProvider.notifier).logout();
+              if (context.mounted) {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                );
+              }
             },
           ),
           SpeedDialChild(
