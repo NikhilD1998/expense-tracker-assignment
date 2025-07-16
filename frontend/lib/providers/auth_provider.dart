@@ -23,7 +23,6 @@ class AuthState {
   }
 }
 
-// Auth Notifier
 class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier() : super(AuthState());
 

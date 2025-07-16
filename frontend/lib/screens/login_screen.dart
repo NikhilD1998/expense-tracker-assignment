@@ -1,19 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/helpers/constants.dart';
+import 'package:frontend/screens/dashboard_screen.dart';
 import 'package:frontend/widgets/custom_primary_button.dart';
 import 'package:frontend/widgets/custom_text_field.dart';
 import 'package:frontend/helpers/device_dimensions.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/providers/auth_provider.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  bool isLoading = false;
+
+  void _login() async {
+    // Validate fields
+    if (emailController.text.trim().isEmpty ||
+        passwordController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter both email and password')),
+      );
+      return;
+    }
+
+    setState(() => isLoading = true);
+    await ref
+        .read(authProvider.notifier)
+        .login(emailController.text.trim(), passwordController.text.trim());
+    setState(() => isLoading = false);
+
+    final authState = ref.read(authProvider);
+    if (authState.token != null) {
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => DashboardScreen()),
+        );
+      }
+    } else if (authState.error != null) {
+      print(authState.error);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(authState.error!)));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +84,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: true,
                 ),
                 const SizedBox(height: 24),
-                CustomPrimaryButton(onPressed: () {}, label: 'Login'),
+                CustomPrimaryButton(
+                  onPressed: _login,
+                  label: isLoading ? 'Logging in...' : 'Login',
+                ),
               ],
             ),
           ),
