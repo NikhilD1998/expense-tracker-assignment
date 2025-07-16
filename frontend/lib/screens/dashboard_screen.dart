@@ -200,47 +200,98 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                         itemCount: expenses.length,
                         itemBuilder: (context, index) {
                           final expense = expenses[index];
-                          return Card(
-                            color: const Color(0xFFFBFBFB),
-                            margin: EdgeInsets.symmetric(
-                              horizontal: DeviceDimensions.width * 0.04,
-                              vertical: DeviceDimensions.height * 0.01,
+                          return Dismissible(
+                            key: Key(
+                              expense['_id'] ??
+                                  expense['date'] ??
+                                  index.toString(),
                             ),
-                            child: ListTile(
-                              title: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      expense['name'] ?? '',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize:
-                                            DeviceDimensions.width * 0.045,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  Text(
-                                    '₹${expense['amount']}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: primaryColor,
-                                      fontSize: DeviceDimensions.width * 0.048,
-                                    ),
-                                  ),
-                                ],
+                            direction: DismissDirection.endToStart,
+                            background: Container(
+                              color: Colors.red,
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24.0,
                               ),
-                              subtitle: Text(
-                                '${expense['category'] ?? ''}\n'
-                                '${expense['date'] != null && expense['date'].toString().isNotEmpty ? DateFormat("MMM d, yyyy").format(DateTime.parse(expense['date']).toLocal()) : ''}',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: DeviceDimensions.width * 0.035,
+                              child: const Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                              ),
+                            ),
+                            confirmDismiss: (direction) async {
+                              // Optionally show a confirmation dialog
+                              return await showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: const Text('Delete Expense'),
+                                  content: const Text(
+                                    'Are you sure you want to delete this expense?',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(ctx).pop(false),
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(ctx).pop(true),
+                                      child: const Text('Delete'),
+                                    ),
+                                  ],
                                 ),
+                              );
+                            },
+                            onDismissed: (direction) async {
+                              // Call your delete API here
+                              await ref
+                                  .read(expenseProvider.notifier)
+                                  .deleteExpense(expense['_id']);
+                              setState(() {}); // Refresh the list
+                            },
+                            child: Card(
+                              color: const Color(0xFFFBFBFB),
+                              margin: EdgeInsets.symmetric(
+                                horizontal: DeviceDimensions.width * 0.04,
+                                vertical: DeviceDimensions.height * 0.01,
                               ),
-                              isThreeLine: true,
+                              child: ListTile(
+                                title: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        expense['name'] ?? '',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize:
+                                              DeviceDimensions.width * 0.045,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    Text(
+                                      '₹${expense['amount']}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: primaryColor,
+                                        fontSize:
+                                            DeviceDimensions.width * 0.048,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                subtitle: Text(
+                                  '${expense['category'] ?? ''}\n'
+                                  '${expense['date'] != null && expense['date'].toString().isNotEmpty ? DateFormat("MMM d, yyyy").format(DateTime.parse(expense['date']).toLocal()) : ''}',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: DeviceDimensions.width * 0.035,
+                                  ),
+                                ),
+                                isThreeLine: true,
+                              ),
                             ),
                           );
                         },

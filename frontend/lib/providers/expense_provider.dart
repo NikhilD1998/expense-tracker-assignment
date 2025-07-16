@@ -84,6 +84,26 @@ class ExpenseNotifier extends StateNotifier<ExpenseState> {
       throw Exception(e.toString());
     }
   }
+
+  Future<bool> deleteExpense(String expenseId) async {
+    try {
+      final token = await _secureStorage.read(key: 'jwt_token');
+      final response = await http.delete(
+        Uri.parse('${ApiEndpoints.deleteExpense}/$expenseId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
 }
 
 final expenseProvider = StateNotifierProvider<ExpenseNotifier, ExpenseState>(
