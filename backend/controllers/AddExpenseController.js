@@ -29,4 +29,16 @@ const addExpense = async (req, res) => {
   }
 };
 
-module.exports = { addExpense };
+const getUserExpenses = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const expenses = await Expense.find({ user: userId }).sort({ date: -1 });
+    res.status(200).json({ expenses });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to fetch expenses", error: error.message });
+  }
+};
+
+module.exports = { addExpense, getUserExpenses };
