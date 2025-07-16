@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/helpers/constants.dart';
 import 'package:frontend/helpers/device_dimensions.dart';
 import 'package:frontend/helpers/transition_animation.dart';
 import 'package:frontend/screens/add_expense_screen.dart';
 import 'package:frontend/providers/expense_provider.dart';
+import 'package:intl/intl.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -28,34 +30,48 @@ class DashboardScreen extends ConsumerWidget {
             return const Center(child: Text('No expenses found.'));
           }
           return ListView.builder(
-            padding: const EdgeInsets.only(bottom: 100),
+            padding: EdgeInsets.only(bottom: DeviceDimensions.height * 0.12),
             itemCount: expenses.length,
             itemBuilder: (context, index) {
               final expense = expenses[index];
               return Card(
                 color: const Color(0xFFFBFBFB),
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                margin: EdgeInsets.symmetric(
+                  horizontal: DeviceDimensions.width * 0.04,
+                  vertical: DeviceDimensions.height * 0.01,
+                ),
                 child: ListTile(
                   title: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Expanded(
                         child: Text(
                           expense['name'] ?? '',
-                          style: const TextStyle(fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: DeviceDimensions.width * 0.045,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       Text(
                         '₹${expense['amount']}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF29756F),
-                          fontSize: 16,
+                          color: primaryColor,
+                          fontSize: DeviceDimensions.width * 0.048,
                         ),
                       ),
                     ],
                   ),
                   subtitle: Text(
-                    '${expense['category'] ?? ''}\n${DateTime.tryParse(expense['date'] ?? '')?.toLocal().toString().split(' ')[0] ?? ''}',
+                    '${expense['category'] ?? ''}\n'
+                    '${expense['date'] != null && expense['date'].toString().isNotEmpty ? DateFormat("MMM d, yyyy").format(DateTime.parse(expense['date']).toLocal()) : ''}',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: DeviceDimensions.width * 0.035,
+                    ),
                   ),
                   isThreeLine: true,
                 ),
